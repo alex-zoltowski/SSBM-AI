@@ -1,13 +1,13 @@
 import os.path
 import time
 
-import p3.fox
-import p3.memory_watcher
-import p3.menu_manager
-import p3.pad
-import p3.state
-import p3.state_manager
-import p3.stats
+import AI.fox
+import AI.memory_watcher
+import AI.menu_manager
+import AI.pad
+import AI.state
+import AI.state_manager
+import AI.stats
 
 
 def find_dolphin_dir():
@@ -31,7 +31,7 @@ def write_locations(dolphin_dir, locations):
             return
 
 def run(fox, state, sm, mw, pad, stats):
-    mm = p3.menu_manager.MenuManager()
+    mm = AI.menu_manager.MenuManager()
     while True:
         last_frame = state.frame
         res = next(mw)
@@ -44,14 +44,14 @@ def run(fox, state, sm, mw, pad, stats):
             stats.add_thinking_time(time.time() - start)
 
 def make_action(state, pad, mm, fox):
-    if state.menu == p3.state.Menu.Game:
+    if state.menu == AI.state.Menu.Game:
         fox.advance(state, pad)
-    elif state.menu == p3.state.Menu.Characters:
+    elif state.menu == AI.state.Menu.Characters:
         mm.pick_fox(state, pad)
-    elif state.menu == p3.state.Menu.Stages:
+    elif state.menu == AI.state.Menu.Stages:
         # Handle this once we know where the cursor position is in memory.
-        pad.tilt_stick(p3.pad.Stick.C, 0.5, 0.5)
-    elif state.menu == p3.state.Menu.PostGame:
+        pad.tilt_stick(AI.pad.Stick.C, 0.5, 0.5)
+    elif state.menu == AI.state.Menu.PostGame:
         mm.press_start_lots(state, pad)
 
 def main():
@@ -60,19 +60,19 @@ def main():
         print('Could not find dolphin config dir.')
         return
 
-    state = p3.state.State()
-    sm = p3.state_manager.StateManager(state)
+    state = AI.state.State()
+    sm = AI.state_manager.StateManager(state)
     write_locations(dolphin_dir, sm.locations())
 
-    stats = p3.stats.Stats()
+    stats = AI.stats.Stats()
 
-    fox = p3.fox.Fox()
+    fox = AI.fox.Fox()
 
     try:
-        print('Start dolphin now. Press ^C to stop p3.')
-        pad_path = dolphin_dir + '/Pipes/p3'
+        print('Start dolphin now. Press ^C to stop AI.')
+        pad_path = dolphin_dir + '/Pipes/AI'
         mw_path = dolphin_dir + '/MemoryWatcher/MemoryWatcher'
-        with p3.pad.Pad(pad_path) as pad, p3.memory_watcher.MemoryWatcher(mw_path) as mw:
+        with AI.pad.Pad(pad_path) as pad, AI.memory_watcher.MemoryWatcher(mw_path) as mw:
             run(fox, state, sm, mw, pad, stats)
     except KeyboardInterrupt:
         print('Stopped')
