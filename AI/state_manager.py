@@ -56,14 +56,19 @@ def add_address(x, y):
 
 class StateManager:
     """Converts raw memory changes into attributes in a State object."""
-    def __init__(self, state):
+    def __init__(self, state, test_mode):
         """Pass in a State object. It will have its attributes zeroed."""
         self.state = state
         self.addresses = {}
 
         self.addresses['804D7420'] = int_handler(self.state, 'frame')
-        self.addresses['80479D30'] = int_handler(self.state, 'menu', 0, 0xFF, Menu, Menu.Characters)
+
         self.addresses['804D6CAC'] = int_handler(self.state, 'stage', 8, 0xFF, Stage, Stage.Unselected)
+
+        if test_mode is True:
+            self.addresses['80479D30'] = int_handler(self.state, 'menu', 0, 0xFF, Menu, Menu.Game)
+        else:
+            self.addresses['80479D30'] = int_handler(self.state, 'menu', 0, 0xFF, Menu, Menu.Characters)
 
         self.state.players = []
         for player_id in range(4):
