@@ -6,16 +6,27 @@ class Fox(Character):
     def __init__(self):
         super().__init__()
 
-    def _logic(self, state, pad):
+    def logic(self, state, pad):
         if self.compare_state(state, AI.state.ActionState.Wait):
             self.dashdance(pad)
         elif self.compare_state(state, AI.state.ActionState.RebirthWait):
             self.action_list.append((60, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.0]))
             self.action_list.append((3, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
-        elif self.compare_state(AI.state.ActionState.DownWaitU) or\
-                self.compare_state(AI.state.ActionState.DownWaitD):
+        elif self.compare_state(state, AI.state.ActionState.DownWaitU) or\
+                self.compare_state(state, AI.state.ActionState.DownWaitD):
             self.action_list.append((0, pad.press_button, [AI.pad.Button.A]))
             self.action_list.append((1, pad.release_button, [AI.pad.Button.A]))
+        elif self.compare_state(state, AI.state.ActionState.DamageFlyN) or\
+                self.compare_state(state, AI.state.ActionState.DamageFlyTop) or\
+                self.compare_state(state, AI.state.ActionState.DamageN2) or\
+                self.compare_state(state, AI.state.ActionState.DamageFlyHi):
+            for _ in range(11):
+                if state.players[0].facing == 1.0:
+                    self.action_list.append((1, pad.tilt_stick, [AI.pad.Stick.MAIN, 1.0, .5]))
+                else:
+                    self.action_list.append((1, pad.tilt_stick, [AI.pad.Stick.MAIN, .0, .5]))
+
+                self.action_list.append((1, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
 
 
 #     def shorthop(self, pad):

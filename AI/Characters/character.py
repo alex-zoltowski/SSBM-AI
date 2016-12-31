@@ -11,7 +11,8 @@ class Character:
         pass
 
     def advance(self, state, pad):
-        #print(state.players[2].action_state)
+        #if state.frame % 4 == 0:
+        #    print(state.players[2].action_state)
         while self.action_list:
             wait, func, args = self.action_list[0]
             if state.frame - self.last_action < wait:
@@ -22,14 +23,17 @@ class Character:
                     func(*args)
                 self.last_action = state.frame
         else:
-            self._logic(state, pad)
+            self.logic(state, pad)
+
+
 
     def dashdance(self, pad):
-        for _ in range(5):
-            self.action_list.append((4, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.0, 0.5]))
-            self.action_list.append((4, pad.tilt_stick, [AI.pad.Stick.MAIN, 1.0, 0.5]))
-
-        self.action_list.append((1, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
+        pass
+        # for _ in range(5):
+        #     self.action_list.append((4, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.0, 0.5]))
+        #     self.action_list.append((4, pad.tilt_stick, [AI.pad.Stick.MAIN, 1.0, 0.5]))
+        #
+        # self.action_list.append((1, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
 
     def compare_state(self, state, current_state):
         return state.players[2].action_state is current_state
