@@ -32,6 +32,7 @@ def write_locations(dolphin_dir, locations):
 
 def run(fox, state, sm, mw, pad, stats, test_mode):
     mm = AI.menu_manager.MenuManager()
+    fox.set_pad(pad)
     while True:
         last_frame = state.frame
         res = next(mw)
@@ -48,7 +49,7 @@ def run(fox, state, sm, mw, pad, stats, test_mode):
 
 def make_action(state, pad, mm, fox):
     if state.menu == AI.state.Menu.Game:
-        fox.advance(state, pad)
+        fox.advance(state)
     elif state.menu == AI.state.Menu.Characters:
         mm.pick_fox(state, pad)
     elif state.menu == AI.state.Menu.Stages:
@@ -59,7 +60,7 @@ def make_action(state, pad, mm, fox):
 def make_action_test(state, pad, mm, fox):
     #print(state.menu)
     if state.menu == AI.state.Menu.Game:
-        fox.advance(state, pad)
+        fox.advance(state)
     elif state.menu == AI.state.Menu.PostGame:
         mm.press_start_lots(state, pad)
 

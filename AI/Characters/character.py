@@ -1,16 +1,19 @@
 import AI.pad
-from abc import abstractmethod
 
 class Character:
 
     def __init__(self):
         self.action_list = []
         self.last_action = 0
+        self.pad = None
 
-    def logic(self, state, pad):
+    def set_pad(self, pad):
+        self.pad = pad
+
+    def logic(self, state):
         pass
 
-    def advance(self, state, pad):
+    def advance(self, state):
         #if state.frame % 4 == 0:
         #    print(state.players[2].action_state)
         while self.action_list:
@@ -23,17 +26,69 @@ class Character:
                     func(*args)
                 self.last_action = state.frame
         else:
-            self.logic(state, pad)
+            self.logic(state)
 
+    def press_button(self, wait, button):
+        self.action_list.append((wait, self.pad.press_button, [button]))
 
+    def release_button(self, wait, button):
+        self.action_list.append((wait, self.pad.release_button, [button]))
 
-    def dashdance(self, pad):
-        pass
-        # for _ in range(5):
-        #     self.action_list.append((4, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.0, 0.5]))
-        #     self.action_list.append((4, pad.tilt_stick, [AI.pad.Stick.MAIN, 1.0, 0.5]))
-        #
-        # self.action_list.append((1, pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
+    def tilt_stick(self, wait, direction):
+        if direction is 'UP':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 1.0]))
+        elif direction is 'DOWN':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.0]))
+        elif direction is 'DOWN_LEFT':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.25, 0.25]))
+        elif direction is 'DOWN_RIGHT':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.75, 0.25]))
+        elif direction is 'RIGHT':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 1.0, 0.5]))
+        elif direction is 'LEFT':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.0, 0.5]))
+        elif direction is 'MIDDLE':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
+
+    def tilt_c_stick(self, wait, direction):
+        if direction is 'UP':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 0.5, 1.0]))
+        elif direction is 'DOWN':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 0.5, 0.0]))
+        elif direction is 'RIGHT':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 1.0, 0.5]))
+        elif direction is 'LEFT':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 0.0, 0.5]))
+        elif direction is 'MIDDLE':
+            self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 0.5, 0.5]))
+
+    def press_trigger(self, wait, amount):
+        self.action_list.append((wait, self.pad.press_trigger, [AI.pad.Trigger.L, amount]))
+
+    def wait(self, wait):
+        self.action_list.append((wait, None, []))
 
     def compare_state(self, state, current_state):
         return state.players[2].action_state is current_state
+
+    def dashdance(self):
+        for _ in range(10):
+            self.tilt_stick(2, 'LEFT')
+            self.tilt_stick(2, 'RIGHT')
+
+        self.tilt_stick(1, 'MIDDLE')
+
+    def shorthop(self):
+        self.press_button(0, AI.pad.Button.X)
+        self.release_button(1, AI.pad.Button.X)
+
+    def wavedash(self, direction):
+        self.tilt_stick(15, direction)
+        self.shorthop()
+        self.press_button(4 , AI.pad.Button.L)
+        self.release_button(2, AI.pad.Button.L)
+        self.tilt_stick(1, "MIDDLE")
+
+    def shield(self):
+        self.press_trigger(5, 1.0)
+        self.press_trigger(10, 0.0)
