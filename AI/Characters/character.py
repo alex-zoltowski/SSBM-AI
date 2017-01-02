@@ -47,7 +47,7 @@ class Character:
             self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 1.0, 0.5]))
         elif direction is 'LEFT':
             self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.0, 0.5]))
-        elif direction is 'MIDDLE':
+        elif direction is None:
             self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.MAIN, 0.5, 0.5]))
 
     def tilt_c_stick(self, wait, direction):
@@ -59,7 +59,7 @@ class Character:
             self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 1.0, 0.5]))
         elif direction is 'LEFT':
             self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 0.0, 0.5]))
-        elif direction is 'MIDDLE':
+        elif direction is None:
             self.action_list.append((wait, self.pad.tilt_stick, [AI.pad.Stick.C, 0.5, 0.5]))
 
     def press_trigger(self, wait, amount):
@@ -73,10 +73,10 @@ class Character:
 
     def dashdance(self):
         for _ in range(10):
-            self.tilt_stick(2, 'LEFT')
-            self.tilt_stick(2, 'RIGHT')
+            self.tilt_stick(3, 'LEFT')
+            self.tilt_stick(3, 'RIGHT')
 
-        self.tilt_stick(1, 'MIDDLE')
+        self.tilt_stick(1, None)
 
     def shorthop(self):
         self.press_button(0, AI.pad.Button.X)
@@ -87,8 +87,8 @@ class Character:
         self.shorthop()
         self.press_button(4 , AI.pad.Button.L)
         self.release_button(2, AI.pad.Button.L)
-        self.tilt_stick(1, "MIDDLE")
+        self.tilt_stick(1, None)
 
-    def shield(self):
-        self.press_trigger(5, 1.0)
-        self.press_trigger(10, 0.0)
+    def shield(self, length):
+        self.press_trigger(0, 0.3)
+        self.press_trigger(length, 0.0)
