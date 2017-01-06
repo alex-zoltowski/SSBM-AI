@@ -73,8 +73,8 @@ class Character:
 
     def dashdance(self):
         for _ in range(10):
-            self.tilt_stick(3, 'LEFT')
-            self.tilt_stick(3, 'RIGHT')
+            self.tilt_stick(6, 'LEFT')
+            self.tilt_stick(6, 'RIGHT')
 
         self.tilt_stick(1, None)
 
@@ -85,9 +85,18 @@ class Character:
     def wavedash(self, direction):
         self.tilt_stick(15, direction)
         self.shorthop()
-        self.press_button(4 , AI.pad.Button.L)
+        self.press_button(4, AI.pad.Button.L)
         self.release_button(2, AI.pad.Button.L)
         self.tilt_stick(1, None)
+
+    def shorthop_nair(self):
+        self.shorthop()
+        self.press_button(4, AI.pad.Button.A)
+        self.release_button(1, AI.pad.Button.A)
+        self.tilt_stick(7, 'DOWN')
+        self.tilt_stick(3, None)
+        self.press_trigger(2, 0.5)
+        self.press_trigger(1, 0.0)
 
     def shield(self, length):
         self.press_trigger(0, 0.3)

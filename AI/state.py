@@ -1,5 +1,6 @@
 import enum
 
+
 @enum.unique
 class PlayerType(enum.Enum):
     Human      = 0

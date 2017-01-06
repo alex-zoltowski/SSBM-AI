@@ -44,6 +44,7 @@ class Pad:
 
     def __exit__(self, *args):
         """Closes the fifo."""
+        self.reset()
         if self.pipe:
             self.pipe.close()
 
