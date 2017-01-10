@@ -1,7 +1,6 @@
 import os.path
 import time
-
-from AI.Characters.fox import *
+from AI.Characters import *
 import AI.memory_watcher
 import AI.menu_manager
 import AI.pad
@@ -30,9 +29,8 @@ def write_locations(dolphin_dir, locations):
             print('Could not detect dolphin directory.')
             return
 
-def run(fox, state, sm, mw, pad, stats, test_mode):
+def run(character, state, sm, mw, stats, test_mode):
     mm = AI.menu_manager.MenuManager()
-    fox.set_pad(pad)
     while True:
         last_frame = state.frame
         res = next(mw)
@@ -42,27 +40,26 @@ def run(fox, state, sm, mw, pad, stats, test_mode):
             stats.add_frames(state.frame - last_frame)
             start = time.time()
             if test_mode is True:
-                make_action_test(state, pad, mm, fox)
+                make_action_test(state, mm, character)
             else:
-                make_action(state, pad, mm, fox)
+                make_action(state, mm, character)
             stats.add_thinking_time(time.time() - start)
 
-def make_action(state, pad, mm, fox):
+def make_action(state, mm, character):
     if state.menu == AI.state.Menu.Game:
-        fox.advance(state)
+        character.advance(state)
     elif state.menu == AI.state.Menu.Characters:
-        mm.pick_fox(state, pad)
+        mm.pick_fox(state, character.get_pad())
     elif state.menu == AI.state.Menu.Stages:
         pad.tilt_stick(AI.pad.Stick.C, 0.5, 0.5)
     elif state.menu == AI.state.Menu.PostGame:
-        mm.press_start_lots(state, pad)
+        mm.press_start_lots(state, character.get_pad())
 
-def make_action_test(state, pad, mm, fox):
-    #print(state.menu)
+def make_action_test(state, mm, character):
     if state.menu == AI.state.Menu.Game:
-        fox.advance(state)
+        character.advance(state)
     elif state.menu == AI.state.Menu.PostGame:
-        mm.press_start_lots(state, pad)
+        mm.press_start_lots(state, character.get_pad())
 
 def main():
     dolphin_dir = find_dolphin_dir()
@@ -70,27 +67,26 @@ def main():
         print('Could not find dolphin config dir.')
         return
 
-    #Make false to automate caracter selection and for playing purposes
+    #Make false to automate caracter selection and playing purposes
     test_mode = True
 
     print("0. Fox")
     print("1. Falcon")
 
-    if input("Select the AI's character: ") is "0":
-        character = Fox()
-
     state = AI.state.State()
     sm = AI.state_manager.StateManager(state, test_mode)
     write_locations(dolphin_dir, sm.locations())
     stats = AI.stats.Stats()
+    pad_path = dolphin_dir + '/Pipes/AI'
+    mw_path = dolphin_dir + '/MemoryWatcher/MemoryWatcher'
 
+    if input("Select the AI's character: ") is "0":
+        character = fox.Fox(pad_path)
     try:
-        print('Start dolphin now. Press ^C to stop AI.')
-        pad_path = dolphin_dir + '/Pipes/AI'
-        mw_path = dolphin_dir + '/MemoryWatcher/MemoryWatcher'
-        with AI.pad.Pad(pad_path) as pad, AI.memory_watcher.MemoryWatcher(mw_path) as mw:
-            run(character, state, sm, mw, pad, stats, test_mode)
+        with AI.memory_watcher.MemoryWatcher(mw_path) as mw:
+            run(character, state, sm, mw, stats, test_mode)
     except KeyboardInterrupt:
+        character.stop()
         print('Stopped')
         print(stats)
 

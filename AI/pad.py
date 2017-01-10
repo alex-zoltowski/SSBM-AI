@@ -36,13 +36,14 @@ class Pad:
             os.mkfifo(self.path)
         except OSError:
             pass
+        self.start()
 
-    def __enter__(self):
+    def start(self):
         """Opens the fifo. Blocks until the other side is listening."""
         self.pipe = open(self.path, 'w', buffering=1)
         return self
 
-    def __exit__(self, *args):
+    def stop(self, *args):
         """Closes the fifo."""
         self.reset()
         if self.pipe:

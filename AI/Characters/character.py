@@ -2,20 +2,28 @@ import AI.pad
 
 class Character:
 
-    def __init__(self):
+    def __init__(self, pad_path):
         self.action_list = []
         self.last_action = 0
-        self.pad = None
+        self.pad = AI.pad.Pad(pad_path)
 
-    def set_pad(self, pad):
-        self.pad = pad
+    def get_pad(self):
+        return self.pad
 
+    #stops pad fifo, resets controller inputs to neutral
+    def stop(self):
+        self.pad.stop()
+
+    #implemented by each character to decide what to do
     def logic(self, state):
         pass
 
+    #compare AI's current state to test_state
+    def compare_state(self, state, test_state):
+        return state.players[2].action_state is test_state
+
+    #executes button presses defined in action_list, runs logic once list is empty
     def advance(self, state):
-        #if state.frame % 4 == 0:
-        #    print(state.players[2].action_state)
         while self.action_list:
             wait, func, args = self.action_list[0]
             if state.frame - self.last_action < wait:
@@ -28,6 +36,8 @@ class Character:
         else:
             self.logic(state)
 
+
+    """Methods simulate controller input; appends necessary tuple to action_list"""
     def press_button(self, wait, button):
         self.action_list.append((wait, self.pad.press_button, [button]))
 
@@ -68,36 +78,39 @@ class Character:
     def wait(self, wait):
         self.action_list.append((wait, None, []))
 
-    def compare_state(self, state, current_state):
-        return state.players[2].action_state is current_state
 
-    def dashdance(self):
-        for _ in range(10):
-            self.tilt_stick(6, 'LEFT')
-            self.tilt_stick(6, 'RIGHT')
+    """Methods execute actions shared among all characters"""
+    def shield(self, wait, length):
+        self.press_trigger(wait, 0.3)
+        self.press_trigger(length, 0.0)
+
+    def dashdance(self, wait, length):
+        self.wait(wait)
+        for _ in range(length):
+            self.tilt_stick(4, 'LEFT')
+            self.tilt_stick(4, 'RIGHT')
 
         self.tilt_stick(1, None)
 
-    def shorthop(self):
-        self.press_button(0, AI.pad.Button.X)
+    def shorthop(self, wait):
+        self.press_button(wait, AI.pad.Button.X)
         self.release_button(1, AI.pad.Button.X)
 
-    def wavedash(self, direction):
-        self.tilt_stick(15, direction)
-        self.shorthop()
-        self.press_button(4, AI.pad.Button.L)
+
+    """Methods execute similar actions that is dependent on character frame data
+       Needs to be overridden for each character"""
+    def wavedash(self, wait, direction, can_airdodge):
+        self.tilt_stick(wait, direction)
+        self.shorthop(1)
+        self.press_button(can_airdodge, AI.pad.Button.L)
         self.release_button(2, AI.pad.Button.L)
         self.tilt_stick(1, None)
 
-    def shorthop_nair(self):
-        self.shorthop()
-        self.press_button(4, AI.pad.Button.A)
+    def shorthop_nair(self, wait, can_attack, can_ff):
+        self.shorthop(wait)
+        self.press_button(can_attack, AI.pad.Button.A)
         self.release_button(1, AI.pad.Button.A)
-        self.tilt_stick(7, 'DOWN')
+        self.tilt_stick(can_ff, 'DOWN')
         self.tilt_stick(3, None)
         self.press_trigger(2, 0.5)
         self.press_trigger(1, 0.0)
-
-    def shield(self, length):
-        self.press_trigger(0, 0.3)
-        self.press_trigger(length, 0.0)
