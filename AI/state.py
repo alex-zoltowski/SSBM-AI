@@ -78,6 +78,20 @@ class Menu(enum.Enum):
     Game       = 2
     PostGame   = 4
 
+# def is_dying(player_state):
+#     if player_state is ActionState.DeadDown or\
+#         player_state is ActionState.DeadLeft or\
+#         player_state is ActionState.DeadRight or\
+#         player_state is ActionState.DeadUp or\
+#         player_state is ActionState.DeadUpStar or\
+#         player_state is ActionState.DeadUpStarIce or\
+#         player_state is ActionState.DeadUpFall or\
+#         player_state is ActionState.DeadUpFallHitCamera or\
+#         player_state is ActionState.DeadUpFallHitCameraFlat or\
+#         player_state is ActionState.DeadUpFallIce or\
+#         player_state is ActionState.DeadUpFallHitCameraIce:
+
+
 @enum.unique
 class ActionState(enum.Enum):
     DeadDown                = 0x0000

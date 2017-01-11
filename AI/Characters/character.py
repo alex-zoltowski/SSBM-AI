@@ -6,35 +6,55 @@ class Character:
         self.action_list = []
         self.last_action = 0
         self.pad = AI.pad.Pad(pad_path)
+        self.state = AI.state.State()
 
     def get_pad(self):
         return self.pad
+
+    def get_state(self):
+        return self.state
+        
+    def make_action(self, mm):
+        if self.state.menu == AI.state.Menu.Game:
+            self.advance(self.state)
+        elif self.state.menu == AI.state.Menu.Characters:
+            mm.pick_fox(self.state, self.pad)
+        elif self.state.menu == AI.state.Menu.Stages:
+            self.pad.tilt_stick(AI.pad.Stick.C, 0.5, 0.5)
+        elif self.state.menu == AI.state.Menu.PostGame:
+            mm.press_start_lots(self.state, self.pad)
+
+    def make_action_test(self, mm):
+        if self.state.menu == AI.state.Menu.Game:
+            self.advance()
+        elif self.state.menu == AI.state.Menu.PostGame:
+            mm.press_start_lots(self.state, self.pad)
 
     #stops pad fifo, resets controller inputs to neutral
     def stop(self):
         self.pad.stop()
 
     #implemented by each character to decide what to do
-    def logic(self, state):
+    def logic(self):
         pass
 
     #compare AI's current state to test_state
-    def compare_state(self, state, test_state):
-        return state.players[2].action_state is test_state
+    def compare_state(self, test_state):
+        return self.state.players[2].action_state is test_state
 
-    #executes button presses defined in action_list, runs logic once list is empty
-    def advance(self, state):
+    #executes button presses defined in action_list, runs logic() once list is empty
+    def advance(self):
         while self.action_list:
             wait, func, args = self.action_list[0]
-            if state.frame - self.last_action < wait:
+            if self.state.frame - self.last_action < wait:
                 return
             else:
                 self.action_list.pop(0)
                 if func is not None:
                     func(*args)
-                self.last_action = state.frame
+                self.last_action = self.state.frame
         else:
-            self.logic(state)
+            self.logic()
 
 
     """Methods simulate controller input; appends necessary tuple to action_list"""
