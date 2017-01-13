@@ -8,6 +8,7 @@ class PlayerType(enum.Enum):
     Demo       = 2
     Unselected = 3
 
+
 @enum.unique
 class Character(enum.Enum):
     Doc        = 0
@@ -36,6 +37,7 @@ class Character(enum.Enum):
     Marth      = 23
     Roy        = 24
     Unselected = 25
+
 
 @enum.unique
 class Stage(enum.Enum):
@@ -71,25 +73,13 @@ class Stage(enum.Enum):
     Random      = 29
     Unselected  = 30
 
+
 @enum.unique
 class Menu(enum.Enum):
     Characters = 0
     Stages     = 1
     Game       = 2
     PostGame   = 4
-
-# def is_dying(player_state):
-#     if player_state is ActionState.DeadDown or\
-#         player_state is ActionState.DeadLeft or\
-#         player_state is ActionState.DeadRight or\
-#         player_state is ActionState.DeadUp or\
-#         player_state is ActionState.DeadUpStar or\
-#         player_state is ActionState.DeadUpStarIce or\
-#         player_state is ActionState.DeadUpFall or\
-#         player_state is ActionState.DeadUpFallHitCamera or\
-#         player_state is ActionState.DeadUpFallHitCameraFlat or\
-#         player_state is ActionState.DeadUpFallIce or\
-#         player_state is ActionState.DeadUpFallHitCameraIce:
 
 
 @enum.unique
@@ -479,12 +469,52 @@ class ActionState(enum.Enum):
     ThrownKirbySpitSShot    = 0x017E
     Unselected              = 0x8000
 
+
 @enum.unique
 class BodyState(enum.Enum):
     Normal     = 0
     Invincible = 1
     Intangible = 2
 
+
+'''Some general states'''
+def is_spawning(state):
+    if state is ActionState.RebirthWait:
+        return True
+    else:
+        return False
+
+def can_move(state):
+    if state is ActionState.Wait or\
+        state is ActionState.Landing:
+        return True
+    else:
+        return False
+
+def can_getupattack(state):
+    if state is ActionState.DownWaitU or\
+        state is ActionState.DownWaitD:
+        return True
+    else:
+        return False
+
+def is_dying(state):
+    if state is ActionState.DeadDown or\
+        state is ActionState.DeadLeft or\
+        state is ActionState.DeadRight or\
+        state is ActionState.DeadUp or\
+        state is ActionState.DeadUpStar or\
+        state is ActionState.DeadUpStarIce or\
+        state is ActionState.DeadUpFall or\
+        state is ActionState.DeadUpFallHitCamera or\
+        state is ActionState.DeadUpFallHitCameraFlat or\
+        state is ActionState.DeadUpFallIce or\
+        state is ActionState.DeadUpFallHitCameraIce:
+        return True
+    else:
+        return False
+
+
 class State:
-    """Databag that is handled by StateManager."""
+    '''Databag that is handled by StateManager.'''
     pass

@@ -7,16 +7,14 @@ class Character:
         self.last_action = 0
         self.pad = AI.pad.Pad(pad_path)
         self.state = AI.state.State()
+        #Set False to enable character selection
+        self.test_mode = True
+        self.sm = AI.state_manager.StateManager(self.state, self.test_mode)
 
-    def get_pad(self):
-        return self.pad
-
-    def get_state(self):
-        return self.state
-        
+    #test_mode = False, Selects character each run
     def make_action(self, mm):
         if self.state.menu == AI.state.Menu.Game:
-            self.advance(self.state)
+            self.advance()
         elif self.state.menu == AI.state.Menu.Characters:
             mm.pick_fox(self.state, self.pad)
         elif self.state.menu == AI.state.Menu.Stages:
@@ -24,23 +22,24 @@ class Character:
         elif self.state.menu == AI.state.Menu.PostGame:
             mm.press_start_lots(self.state, self.pad)
 
+    #test_mode = True, AI starts fighting each run, saves time during testing
     def make_action_test(self, mm):
         if self.state.menu == AI.state.Menu.Game:
             self.advance()
         elif self.state.menu == AI.state.Menu.PostGame:
             mm.press_start_lots(self.state, self.pad)
 
-    #stops pad fifo, resets controller inputs to neutral
-    def stop(self):
-        self.pad.stop()
-
     #implemented by each character to decide what to do
     def logic(self):
         pass
 
-    #compare AI's current state to test_state
-    def compare_state(self, test_state):
+    #compare AI's current state
+    def compare_AI_state(self, test_state):
         return self.state.players[2].action_state is test_state
+
+    #compare P1 current state
+    def compare_P1_state(self, test_state):
+        return self.state.players[0].action_state is test_state
 
     #executes button presses defined in action_list, runs logic() once list is empty
     def advance(self):
@@ -57,7 +56,7 @@ class Character:
             self.logic()
 
 
-    """Methods simulate controller input; appends necessary tuple to action_list"""
+    '''Methods simulate controller input; appends necessary tuple to action_list'''
     def press_button(self, wait, button):
         self.action_list.append((wait, self.pad.press_button, [button]))
 
@@ -99,7 +98,7 @@ class Character:
         self.action_list.append((wait, None, []))
 
 
-    """Methods execute actions shared among all characters"""
+    '''Execute actions shared among all characters'''
     def shield(self, wait, length):
         self.press_trigger(wait, 0.3)
         self.press_trigger(length, 0.0)
@@ -117,8 +116,7 @@ class Character:
         self.release_button(1, AI.pad.Button.X)
 
 
-    """Methods execute similar actions that is dependent on character frame data
-       Needs to be overridden for each character"""
+    '''Execute similar actions that is dependent on character frame data'''
     def wavedash(self, wait, direction, can_airdodge):
         self.tilt_stick(wait, direction)
         self.shorthop(1)
