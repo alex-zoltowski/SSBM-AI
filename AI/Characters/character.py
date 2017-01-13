@@ -1,4 +1,5 @@
 import AI.pad
+import AI.state
 
 class Character:
 
@@ -30,8 +31,14 @@ class Character:
             mm.press_start_lots(self.state, self.pad)
 
     #implemented by each character to decide what to do
+    #includes some states where each character will respond the same
     def logic(self):
-        pass
+        if AI.state.is_spawning(self.state.players[2].action_state):
+            self.tilt_stick(60, 'DOWN')
+            self.tilt_stick(3, None)
+        elif AI.state.can_move(self.state.players[2].action_state) and\
+                AI.state.is_dying(self.state.players[0].action_state):
+            self.style()
 
     #compare AI's current state
     def compare_AI_state(self, test_state):
@@ -99,6 +106,9 @@ class Character:
 
 
     '''Execute actions shared among all characters'''
+    def style(self, wait):
+        pass
+        
     def shield(self, wait, length):
         self.press_trigger(wait, 0.3)
         self.press_trigger(length, 0.0)

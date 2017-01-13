@@ -8,21 +8,18 @@ class Fox(Character):
         super().__init__(pad_path)
 
     def logic(self):
-        if AI.state.is_spawning(self.state.players[2].action_state):
-            self.tilt_stick(60, 'DOWN')
-            self.tilt_stick(3, None)
-        elif AI.state.can_move(self.state.players[2].action_state):
+        super().logic()
+        if AI.state.can_move(self.state.players[2].action_state):
             self.shorthop_nair(1)
         elif AI.state.can_getupattack(self.state.players[0].action_state):
             self.press_button(0, AI.pad.Button.A)
             self.release_button(1, AI.pad.Button.A)
 
-        elif AI.state.can_move(self.state.players[2].action_state) and\
-                AI.state.is_dying(self.state.players[0].action_state):
-            self.double_laser(1)
-
 
     '''Override methods'''
+    def style(self, wait):
+        self.double_laser(wait)
+
     def wavedash(self, wait, direction):
         super().wavedash(wait, direction, 4)
 
