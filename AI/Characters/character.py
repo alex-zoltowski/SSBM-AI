@@ -38,7 +38,7 @@ class Character:
             self.tilt_stick(3, None)
         elif AI.state.can_move(self.state.players[2].action_state) and\
                 AI.state.is_dying(self.state.players[0].action_state):
-            self.style()
+            self.style(1)
 
     #compare AI's current state
     def compare_AI_state(self, test_state):
@@ -108,7 +108,7 @@ class Character:
     '''Execute actions shared among all characters'''
     def style(self, wait):
         pass
-        
+
     def shield(self, wait, length):
         self.press_trigger(wait, 0.3)
         self.press_trigger(length, 0.0)
@@ -127,18 +127,18 @@ class Character:
 
 
     '''Execute similar actions that is dependent on character frame data'''
-    def wavedash(self, wait, direction, can_airdodge):
+    def wavedash(self, wait, direction, wait_airdodge):
         self.tilt_stick(wait, direction)
         self.shorthop(1)
-        self.press_button(can_airdodge, AI.pad.Button.L)
+        self.press_button(wait_airdodge, AI.pad.Button.L)
         self.release_button(2, AI.pad.Button.L)
         self.tilt_stick(1, None)
 
-    def shorthop_nair(self, wait, can_attack, can_ff):
+    def shorthop_nair(self, wait, wait_attack, wait_ff):
         self.shorthop(wait)
-        self.press_button(can_attack, AI.pad.Button.A)
+        self.press_button(wait_attack, AI.pad.Button.A)
         self.release_button(1, AI.pad.Button.A)
-        self.tilt_stick(can_ff, 'DOWN')
+        self.tilt_stick(wait_ff, 'DOWN')
         self.tilt_stick(3, None)
         self.press_trigger(2, 0.5)
         self.press_trigger(1, 0.0)

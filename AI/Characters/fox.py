@@ -10,8 +10,10 @@ class Fox(Character):
     def logic(self):
         super().logic()
         if AI.state.can_move(self.state.players[2].action_state):
-            self.shorthop_nair(1)
-        elif AI.state.can_getupattack(self.state.players[0].action_state):
+    #        self.wavedash(10, 'DOWN_LEFT')
+        #    self.wavedash(10, 'DOWN_RIGHT')
+            self.dashdance(1, 100)
+        elif AI.state.can_getupattack(self.state.players[2].action_state):
             self.press_button(0, AI.pad.Button.A)
             self.release_button(1, AI.pad.Button.A)
 
