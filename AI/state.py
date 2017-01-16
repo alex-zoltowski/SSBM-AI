@@ -514,6 +514,17 @@ def is_dying(state):
     else:
         return False
 
+def is_falling(state):
+    if state is ActionState.Fall or\
+        state is ActionState.FallF or\
+        state is ActionState.FallB or\
+        state is ActionState.FallAerial or\
+        state is ActionState.FallAerialF or\
+        state is ActionState.FallAerialB or\
+        state is ActionState.DamageFall:
+        return True
+    else:
+        return False
 
 class State:
     '''Databag that is handled by StateManager.'''

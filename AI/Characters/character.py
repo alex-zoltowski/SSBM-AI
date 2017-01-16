@@ -109,6 +109,12 @@ class Character:
     def style(self, wait):
         pass
 
+    def side_b(self, wait):
+        self.tilt_stick(wait, 'RIGHT')
+        self.press_button(1, AI.pad.Button.B)
+        self.release_button(2, AI.pad.Button.B)
+        self.tilt_stick(2, None)
+
     def shield(self, wait, length):
         self.press_trigger(wait, 0.3)
         self.press_trigger(length, 0.0)
