@@ -11,13 +11,12 @@ class Fox(Character):
         super().logic()
 
         #recovering on yoshi's
-        if self.state.players[2].pos_y <= -17.0:
+        if self.state.players[2].pos_y <= -16.0 and \
+            self.state.players[2].pos_y >= -19:
             if AI.state.is_falling(self.state.players[2].action_state):
                 self.side_b(1)
         if AI.state.can_move(self.state.players[2].action_state):
-    #        self.wavedash(10, 'DOWN_LEFT')
-    #        self.wavedash(10, 'DOWN_RIGHT')
-            self.double_laser(1)
+            self.shorthop_nair(1)
         elif AI.state.can_getupattack(self.state.players[2].action_state):
             self.press_button(0, AI.pad.Button.A)
             self.release_button(1, AI.pad.Button.A)

@@ -36,9 +36,6 @@ class Character:
         if AI.state.is_spawning(self.state.players[2].action_state):
             self.tilt_stick(60, 'DOWN')
             self.tilt_stick(3, None)
-        elif AI.state.can_move(self.state.players[2].action_state) and\
-                AI.state.is_dying(self.state.players[0].action_state):
-            self.style(1)
 
     #compare AI's current state
     def compare_AI_state(self, test_state):
